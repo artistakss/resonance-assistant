@@ -1,3 +1,1 @@
-web: python bot.py
-
-config: add Procfile for Render/Heroku
+web: /usr/local/bin/python3.11 bot.py
