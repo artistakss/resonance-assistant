@@ -4,7 +4,7 @@ from keyboards.reply import main_menu_keyboard
 
 router = Router()
 
-@router.message(F.text == "🧘 Описание Анжелики")
+@router.message_handler(F.text == "🧘 Описание Анжелики")
 async def handle_description(message: types.Message):
     await message.answer(
         "✨ **Анжелика — специалист по саморазвитию и осознанности.**\n\n"
