@@ -1,1 +1,1 @@
-web: /usr/local/bin/python3.11 bot.py
+web: python bot.py
