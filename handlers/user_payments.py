@@ -18,7 +18,7 @@ class PaymentProcess(StatesGroup):
 
 # --- 1. Вход в процесс оплаты ---
 
-@router.message(F.text == "💳 Оплата подписки")
+@router.message_handler(F.text == "💳 Оплата подписки")
 async def cmd_pay_start(message: types.Message, state: FSMContext):
     """Выводит стоимость и предлагает выбрать метод оплаты."""
     
@@ -42,7 +42,7 @@ async def cmd_pay_start(message: types.Message, state: FSMContext):
 
 # --- 2. Выдача реквизитов и запрос чека ---
 
-@router.callback_query(PaymentProcess.choosing_method, F.data.startswith("pay_method"))
+@router.callback_query_handler(PaymentProcess.choosing_method, F.data.startswith("pay_method"))
 async def choose_payment_method(call: types.CallbackQuery, state: FSMContext):
     """Выдает реквизиты оплаты и переводит в режим ожидания чека."""
     await call.answer()
@@ -69,7 +69,7 @@ async def choose_payment_method(call: types.CallbackQuery, state: FSMContext):
     )
 
 
-@router.callback_query(F.data == "ready_to_send_proof")
+@router.callback_query_handler(F.data == "ready_to_send_proof")
 async def ready_to_send_proof(call: types.CallbackQuery, state: FSMContext):
     """Уведомляет пользователя, что теперь нужно прислать чек."""
     await call.answer()
