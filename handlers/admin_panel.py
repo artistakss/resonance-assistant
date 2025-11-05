@@ -23,8 +23,8 @@ class PaymentDetailsUpdate(StatesGroup):
     waiting_for_details = State()
 
 # --- 1. Главная Админ-панель ---
-
-@router.message(Command("admin"))
+from aiogram.dispatcher.filters import Command
+@router.message_handler(Command("admin"))
 async def cmd_admin(message: types.Message):
     """Выводит главное меню администратора."""
     text = (
@@ -80,7 +80,7 @@ async def notify_checker_new_payment(bot: Bot, user_id: int, username: str, meth
         await bot.send_message(CHECKER_ID, f"⚠️ Не удалось отправить чек-фото. ID: {file_id}\n{caption}", reply_markup=markup)
 
 
-@router.callback_query(F.data.startswith("confirm_payment"))
+@router.callback_query_handler(F.data.startswith("confirm_payment"))
 async def process_confirm_payment(call: types.CallbackQuery, bot: Bot, sheets_manager: SheetsManager):
     """Обрабатывает подтверждение оплаты (нажимает Венера)."""
     # Удаляем кнопки после нажатия
@@ -127,7 +127,7 @@ async def process_confirm_payment(call: types.CallbackQuery, bot: Bot, sheets_ma
 
 # --- 3. Обновление Реквизитов Оплаты ---
 
-@router.callback_query(F.data == "admin_update_details")
+@router.callback_query_handler(F.data == "admin_update_details")
 async def choose_method_for_update(call: types.CallbackQuery, state: FSMContext):
     """Шаг 1: Выбор метода оплаты для обновления."""
     await call.message.edit_text("🔄 **Обновление Реквизитов Оплаты**\n\nВыберите метод, который хотите обновить:",
@@ -143,7 +143,7 @@ async def choose_method_for_update(call: types.CallbackQuery, state: FSMContext)
     await state.set_state(PaymentDetailsUpdate.choosing_method)
 
 
-@router.callback_query(PaymentDetailsUpdate.choosing_method, F.data.startswith("update_method"))
+@router.callback_query_handler(PaymentDetailsUpdate.choosing_method, F.data.startswith("update_method"))
 async def start_details_input(call: types.CallbackQuery, state: FSMContext):
     """Шаг 2: Запрос новых реквизитов."""
     method = call.data.split(':')[1]
@@ -160,7 +160,7 @@ async def start_details_input(call: types.CallbackQuery, state: FSMContext):
     await state.set_state(PaymentDetailsUpdate.waiting_for_details)
 
 
-@router.message(PaymentDetailsUpdate.waiting_for_details)
+@router.message_handler(PaymentDetailsUpdate.waiting_for_details)
 async def finalize_details_update(message: types.Message, state: FSMContext):
     """Шаг 3: Сохранение новых реквизитов в БД."""
     new_details = message.text.strip()
@@ -180,7 +180,7 @@ async def finalize_details_update(message: types.Message, state: FSMContext):
     
 # --- 4. Просмотр отчетов ---
 
-@router.callback_query(F.data == "admin_list_subs")
+@router.callback_query_handler(F.data == "admin_list_subs")
 async def list_active_subscribers(call: types.CallbackQuery):
     """Выводит список активных подписчиков."""
     users = await get_all_active_users()
@@ -202,7 +202,7 @@ async def list_active_subscribers(call: types.CallbackQuery):
     ]))
 
 
-@router.callback_query(F.data == "admin_list_expiring")
+@router.callback_query_handler(F.data == "admin_list_expiring")
 async def list_expiring_subscribers(call: types.CallbackQuery):
     """Выводит список подписчиков, у которых скоро истекает срок."""
     # NOTE: В db.py нужно реализовать get_users_about_to_expire
