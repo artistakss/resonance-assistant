@@ -72,3 +72,5 @@ if __name__ == "__main__":
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
         logging.warning("Bot stopped!")
+
+feat: add bot.py entry point
