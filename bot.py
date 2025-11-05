@@ -73,4 +73,4 @@ if __name__ == "__main__":
     except (KeyboardInterrupt, SystemExit):
         logging.warning("Bot stopped!")
 
-feat: add bot.py entry point
+fix: Register user_payments and admin_panel routers in dispatcher
