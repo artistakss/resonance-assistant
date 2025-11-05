@@ -1,8 +1,8 @@
-aiogram==2.23.1  # Изменено: Понижение версии для совместимости с aiohttp 3.7.4
+aiogram==2.25.1
 aiosqlite==0.19.0
 python-dotenv==1.0.0
 openai==1.3.7
 gspread==5.12.2
 oauth2client==4.1.2
 apscheduler==3.10.1
-aiohttp==3.7.4
+aiohttp==3.8.6  # Возвращаемся к версии, которая требуется aiogram 2.25.1
